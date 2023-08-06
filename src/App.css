@@ -1,42 +1,46 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  width: 100%;
 }
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+nav {
+  display: flex;
+  background-color: #242424;
+  padding: 0vw 1vw;
+  align-items: center;
+  justify-content: space-between;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row-reverse;
+  justify-content: flex-end
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.message > p {
+  background-color: #404040;
+  padding: 10px;
+  max-width: 29vw;
+  min-width: 100px;
+  border-radius: 25px;
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sent > p {
+  background-color: #007be2;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.sent{
+  flex-direction: row;
+  justify-content: flex-end
 }
-
-.card {
-  padding: 2em;
+.message > img{
+  height:48px;
+  border-radius: 50%;
 }
-
-.read-the-docs {
-  color: #888;
+.formSend{
+  padding-top: 10px;
+}
+.formSend > input {
+  border: 0px;
+  font-size: larger;
+  width: 34vw;
+  border-radius: 10px;
+  height: 42px;
 }
