@@ -4,6 +4,7 @@ import { auth, googleProvider, db } from "./firebase";
 import {
   orderBy,
   doc,
+  deleteDoc,
   limit,
   collection,
   query,
@@ -12,9 +13,9 @@ import {
 } from "firebase/firestore";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 import "firebase/auth";
-import { useState } from "react";
+import { useState,  useEffect, useRef  } from "react";
 
 const Auth = () => {
   const signInWithGoogle = async () => {
@@ -38,10 +39,18 @@ const logOut = async () => {
   }
 };
 function ChatMessages(props) {
-  const { text, uid, photoURL } = props.message;
+  const { text, uid, photoURL, id } = props.message;
   const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
+  const deleteMessage = async (e) => {
+    e.preventDefault();
+    await deleteDoc(doc(db, "messages", id));
+  }
   return (
     <div className={`message ${messageClass}`}>
+    { 
+      auth.currentUser.uid === "stSfc2avyzV39ZFfibSsDdRgmxc2" && 
+    <span className="material-symbols-outlined deleteIcon" onClick={deleteMessage}>delete</span>
+    }
       <p>{text}</p>
       <img src={photoURL} />
     </div>
@@ -49,14 +58,17 @@ function ChatMessages(props) {
 }
 
 function App() {
-  const q = query(collection(db, "messages"), orderBy("createdAt"), limit(20));
-  const [messages] = useCollectionData(q, { isField: "id" });
+  const q = query(collection(db, "messages"), orderBy("createdAt"), limit(50));
+  const [messagesSnapshot] = useCollection(q);
+  const messages = messagesSnapshot?.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
   const [user] = useAuthState(auth);
   const [formValue, SetFormValue] = useState("");
-
   const sendMessage = async (e) => {
     e.preventDefault();
-    console.log(formValue);
     const { uid, photoURL } = auth.currentUser;
     await addDoc(collection(db, "messages"), {
       text: formValue,
@@ -64,9 +76,17 @@ function App() {
       uid,
       photoURL,
     });
+    SetFormValue("")
   };
 
-  console.log("run");
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <>
       {user ? (
@@ -78,6 +98,7 @@ function App() {
           {messages?.map((msg) => (
             <ChatMessages key={msg.id} message={msg} />
           ))}
+          <div ref={messagesEndRef} />
           <form onSubmit={sendMessage} className="formSend">
             <input
               type="text"

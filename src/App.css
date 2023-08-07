@@ -36,11 +36,20 @@ nav {
 }
 .formSend{
   padding-top: 10px;
+  display: flex;
 }
 .formSend > input {
   border: 0px;
   font-size: larger;
-  width: 34vw;
-  border-radius: 10px;
+  width: 80%;
   height: 42px;
+}
+.formSend > button {
+  width: 20%;
+  border-radius: 0px;
+}
+.deleteIcon {
+  border-radius: 50%;
+  padding: 8px;
+  background-color: red;
 }
